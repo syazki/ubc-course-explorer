@@ -70,3 +70,25 @@ class UBCCourseScraper:
             print(f"Error parsing course header: {e}")
             return None
 
+    def scrape_all_courses(self, departments=None):
+        """
+        Main method to scrape courses from specified departments
+        """
+        if departments is None:
+            departments = ['CPSC', 'MATH', 'ENGL']
+        
+        print(f"🚀 Starting to scrape {len(departments)} departments...")
+        
+        for dept in departments:
+            headers = self.scrape_department_courses(dept)
+            for header in headers:
+                course_info = self.parse_course_from_header(header, dept)
+                if course_info:
+                    self.courses_data.append(course_info)
+            time.sleep(2)
+        
+        print(f"✅ Scraping complete! Found {len(self.courses_data)} total courses.")
+        return self.courses_data
+
+
+
