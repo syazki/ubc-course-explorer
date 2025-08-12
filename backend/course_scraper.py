@@ -39,3 +39,34 @@ class UBCCourseScraper:
         except requests.RequestException as e:
             print(f"❌ Error fetching {department} page: {e}")
             return []
+
+    def parse_course_from_header(self, header, department):
+        """
+        Parse course information from an h3 header element
+        """
+        try:
+            header_text = header.get_text()
+            code_pattern = f"{department.upper()}_V \d+[A-Z]?"
+            code_match = re.search(code_pattern, header_text)
+            if not code_match:
+                return None
+            
+            raw_code = code_match.group()
+            course_code = raw_code.replace('_V', '')
+            
+            strong_tag = header.find('strong')
+            course_title = strong_tag.get_text().strip() if strong_tag else "No title available"
+            
+            description_p = header.find_next_sibling('p')
+            description = description_p.get_text().strip() if description_p else "No description available"
+            
+            return {
+                'code': course_code,
+                'title': course_title,
+                'department': department,
+                'description': description
+            }
+        except Exception as e:
+            print(f"Error parsing course header: {e}")
+            return None
+
