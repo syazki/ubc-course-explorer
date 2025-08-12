@@ -90,5 +90,16 @@ class UBCCourseScraper:
         print(f"✅ Scraping complete! Found {len(self.courses_data)} total courses.")
         return self.courses_data
 
+    def save_to_file(self, filename='../data/courses.json'):
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(self.courses_data, f, indent=2, ensure_ascii=False)
+        print(f"✅ Data saved to {filename}")
+
+    def load_from_file(self, filename='../data/courses.json'):
+        with open(filename, 'r', encoding='utf-8') as f:
+            self.courses_data = json.load(f)
+        print(f"✅ Loaded {len(self.courses_data)} courses from {filename}")
+        return self.courses_data
 
 
